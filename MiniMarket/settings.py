@@ -43,7 +43,10 @@ INSTALLED_APPS = [
     'Departamentos',
     'Productos',
     'Ventas',
-    'Compras'
+    'Compras',
+    'Login',
+    'Layout',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +65,9 @@ ROOT_URLCONF = 'MiniMarket.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+          'Layout',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
