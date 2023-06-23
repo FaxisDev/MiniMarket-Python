@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block subtitle %}
+Crear venta
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <form class="d-flex" method="GET" action="{% url 'crear_venta' %}">
+                {% csrf_token %}
+                <input class="form-control me-2" type="search" placeholder="Buscar por nombre & descripciones"
+                    aria-label="Buscar" name="filtro_productos">
+                <button class="btn btn-outline-primary" type="submit">Buscar productos</button>
+            </form>
+        </div>
+    </div>
+    <!-- Resto del contenido del contenedor -->
+</div>
+
+<div class="container mt-4">
+
+    <div class="row">
+        <div class="col-md-8">
+            <h3 class="mb-4">Productos disponibles</h3>
+            {% for producto in lista_productos %}
+
+            <div class="card mb-3">
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ producto.nombre }}</h5>
+                    <p class="card-text">{{ producto.descripcion }} ({{ producto.id_marca }})</p>
+                    <p class="card-text">Precio: ${{ producto.precio }}</p>
+
+                    <form class="d-flex" method="GET" action="{% url 'agregar_carrito' %}">
+                        {% csrf_token %}
+
+                        <button name="producto_id" value="{{ producto.id }}" class="btn btn-primary"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-bag-plus-fill" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                    d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zM8.5 8a.5.5 0 0 0-1 0v1.5H6a.5.5 0 0 0 0 1h1.5V12a.5.5 0 0 0 1 0v-1.5H10a.5.5 0 0 0 0-1H8.5V8z" />
+                            </svg> Agregar al carrito</button>
+                    </form>
+
+                </div>
+
+                <div class="card-footer text-body-secondary">
+                    Stock disponible <span class="badge" style="background: #3A4570">{{ producto.stock }}</span>
+                </div>
+            </div>
+
+            {% empty %}
+            <p>No hay productos disponibles.</p>
+
+
+            {% endfor %}
+            <!-- Agrega más productos aquí -->
+        </div>
+        <div class="col-md-4">
+            <h3 class="mb-4">Carrito de compras</h3>
+            <ul class="list-group">
+                {% for item in lista_carrito %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{ item.nombre }}
+                    <span class="badge bg-primary">${{ item.precio }}</span>
+                </li>
+                {% empty %}
+                <p>No has agregado nada.</p>
+
+
+                {% endfor %}
+
+                <!-- Agrega más items aquí -->
+            </ul>
+
+            <form class="d-grid" method="GET" action="{% url 'vaciar_carrito' %}">
+                {% csrf_token %}
+
+                <button name="producto_id" value="{{ producto.id }}" class="btn btn-danger d-inline"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-trash" viewBox="0 0 16 16">
+                        <path
+                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                        <path
+                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                    </svg> Vaciar carrito</button>
+            </form>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    Aplicar descuento
+                </div>
+                <div class="card-body">
+                    <form class="d-grid" method="GET" action="{% url 'descuento_carrito' %}">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" aria-label="Monto de descuento" name="descuento"
+                                value="{{descuento_carrito}}">
+                            <span class="input-group-text"> MXN</span>
+                        </div>
+                    </form>
+
+                    {% if descuento_carrito_error %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ descuento_carrito_error }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Información de compra</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Subtotal: <span
+                            class="text-primary">${{subtotal_carrito}}</span></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Descuento: <span
+                            class="text-primary">${{descuento_carrito}}</span></h6>
+                    <h6 class="card-subtitle mb-2 text-muted">Total: <span
+                            class="text-primary">${{total_carrito}}</span></h6>
+                </div>
+            </div>
+            <form method="POST" action="{% url 'guardar_venta' %}">
+                {% csrf_token %}
+                <input type="hidden" name="lista_carrito" value="{{ lista_carrito }}">
+                <input type="hidden" name="descuento_carrito" value="{{ descuento_carrito }}">
+                <input type="hidden" name="subtotal_carrito" value="{{ subtotal_carrito }}">
+                <input type="hidden" name="total_carrito" value="{{ total_carrito }}">
+                
+                <div class="card mt-2">
+                    <button type="submit" class="btn btn-success d-inline"> Vender </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

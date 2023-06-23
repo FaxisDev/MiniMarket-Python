@@ -1,18 +1,21 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect
 
-from Empleados.models import Empleados
+from Login.decorators import empleados_login_required
+from .backends import CustomUserBackend
 
 def login_view(request):
     if request.method == 'POST':
         email = request.POST['email']
         clave = request.POST['clave']
         
-        empleados = Empleados.objects.get(email = email)
-        if empleados.check_password(clave):
+        user = CustomUserBackend().authenticate(request, email=email, password=clave)
+
+        if user is not None:
+            # Establecer el atributo 'backend' en el objeto 'User'
+            user.backend = 'Login.backends.CustomUserBackend'
+            login(request, user)
             
-            login(request, empleados)
             # Cambia 'dashboard' por la URL a la que deseas redirigir al iniciar sesión correctamente
             return redirect('inicio')
         else:
@@ -21,7 +24,7 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-##@login_required
+@empleados_login_required
 def dashboard(request):
     # Lógica de la vista del panel de control o dashboard
     return render(request, 'inicio.html')

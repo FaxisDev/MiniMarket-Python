@@ -6,6 +6,7 @@ from Marcas.models import Marcas
 class Productos(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=255, default='')
     precio = models.FloatField()
     stock = models.IntegerField()
     id_departamento = models.ForeignKey(Departamentos, on_delete=models.CASCADE)

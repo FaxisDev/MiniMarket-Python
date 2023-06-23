@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block subtitle %}
+    Crear venta
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col col-md-6">
+        <div class="card">
+            <div class="card-header">
+              Carrito
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Ultimas ventas</li>
+              <li class="list-group-item">No has tenido ninguna venta</li>
+
+            </ul>
+          </div>
+    </div>
+    <div class="col col-md-6">
+        <div class="card text-center">
+            <div class="card-header">
+              Featured
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Lista de compras (Proveedores)</h5>
+              <p class="card-text">No hay ninguna orden de compra</p>
+              <a href="#" class="btn btn-primary">Revisar</a>
+            </div>
+            <div class="card-footer text-body-secondary">
+              2 days ago
+            </div>
+          </div>
+    </div>
+</div>
+    
+{% endblock %}
